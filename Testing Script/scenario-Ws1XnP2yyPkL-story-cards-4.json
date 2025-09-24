@@ -1,0 +1,34 @@
+[
+  {
+    "keys": "Master, Masters, master, masters",
+    "value": "The Master is the one who owns the Servant. They are allowed to punish the Servant if they do not complete their tasks to the Master's satisfaction. The Master can also give the Servant rewards for good behavior. The Master is typically wealthy and lives in a large home or estate, and they may have multiple Servants working for them.",
+    "type": "faction",
+    "title": "Master",
+    "description": "",
+    "useForCharacterCreation": false
+  },
+  {
+    "keys": "Servant, Servants",
+    "value": "The Servant works under the supervision of a master, managing daily tasks like cooking and cleaning at the masters home, with the goal of completing tasks in order to avoid being punished by their master, interacting with other Servants, and following rules set by their master.",
+    "type": "faction",
+    "title": "Servant",
+    "description": "",
+    "useForCharacterCreation": false
+  },
+  {
+    "keys": "${Your ${ First Name } And ${Last Name} is}'s Servants, ${First Name}'s Servants, ${Last Name}'s Servants",
+    "value": "This is a list of the Names of ${Your ${ First Name } And ${Last Name} is}'s Servants.\n- {Servant 1:}\n- {Servant 2:}\n- {Servant 3:}\n- {Servant 4:}\n- {Servant 5:}\n- {Servant 6:}\n- {Servant 7:}\n- {Servant 8:}\n- {Servant 9:}\n- {Servant 10:}\n",
+    "type": "Lists",
+    "title": "${Your ${ First Name } And ${Last Name} is}'s Servants 1",
+    "description": "Do not fill this out! My script should do it automatically and automatically update it. It should also automatically add story cards for each of the entries as they are added.\n\nIf this story card gets filled up, then the script should also create a new one automatically and start filling that one out. You can disable this in the Script Settings Story Card, but I wouldn't suggest it since it is designed to be as seamless as possible without requiring any additional effort from the user. All you need to do is mention the name, and other information about your servant at Any point in the story with hashtag followed by a double dash \"#--\" in front and the same but in reverse \"--#\" in the back of your input. Only use # for Servant information. But don't worry, the script will automatically remove all \"#-- --#\" from your story so that there is no break in immersion. ",
+    "useForCharacterCreation": false
+  },
+  {
+    "keys": "${Your ${ First Name } And ${Last Name} is}, ${Your First Name}, ${Your Last Name}",
+    "value": "Character Sheet\nName: ${Your ${ First Name } And ${Last Name} is}\nGender: ${Your Gender}\nAge: ${Your Age (Number Only)}\nAppearance: ${Your Physical Description}\nPersonality: ${Your Personality}\nClothing: ${The Clothing That You Start The Story Wearing}\nOccupation: ${What Is Your Job}\nTitle: ${What Your Servant/Servants Call You}\nSubordinate(s): ${Your Servant/Servants First And Last Names (Separate With A Comma)}\nOther: ${Any Additional Information}",
+    "type": "Character Sheet",
+    "title": "${Your ${ First Name } And ${Last Name} is}",
+    "description": "",
+    "useForCharacterCreation": false
+  }
+]
