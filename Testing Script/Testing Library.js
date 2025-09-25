@@ -341,43 +341,61 @@ function Testing(inHook, inText, inStop) {
 
 	function ensureSettingsCard() {
 		console.log('[Testing] ensureSettingsCard() called');
-		
+
 		// Always create a new settings card first
 		console.log('[Testing] Creating new settings card...');
 		const newSettingsCard = createSettingsCard();
-		
+
 		// Now check for any existing settings cards and remove duplicates
 		console.log('[Testing] Checking for duplicate settings cards...');
 		const allSettingsCards = getAllSettingsCards();
-		
+
 		if (allSettingsCards.length > 1) {
-			console.log(`[Testing] Found ${allSettingsCards.length} settings cards, removing duplicates...`);
-			
+			console.log(
+				`[Testing] Found ${allSettingsCards.length} settings cards, removing duplicates...`
+			);
+
 			// Sort cards by creation timestamp (newest first), fallback to the newest created card
 			allSettingsCards.sort((a, b) => {
 				const timeA = a.created ? new Date(a.created).getTime() : 0;
 				const timeB = b.created ? new Date(b.created).getTime() : 0;
 				return timeB - timeA; // Sort descending (newest first)
 			});
-			
+
 			// Keep the newest card (first in sorted array) and remove the others
 			const cardToKeep = allSettingsCards[0];
 			const cardsToRemove = allSettingsCards.slice(1);
-			
-			console.log(`[Testing] Keeping newest card: "${cardToKeep.title}" (created: ${cardToKeep.created || 'no timestamp'})`);
-			console.log(`[Testing] Removing ${cardsToRemove.length} older duplicate settings cards`);
-			
+
+			console.log(
+				`[Testing] Keeping newest card: "${
+					cardToKeep.title
+				}" (created: ${cardToKeep.created || 'no timestamp'})`
+			);
+			console.log(
+				`[Testing] Removing ${cardsToRemove.length} older duplicate settings cards`
+			);
+
 			cardsToRemove.forEach((cardToRemove, index) => {
 				const cardIndex = state.storyCards.indexOf(cardToRemove);
 				if (cardIndex !== -1) {
-					console.log(`[Testing] Removing duplicate card ${index + 1}: "${cardToRemove.title}" (created: ${cardToRemove.created || 'no timestamp'}) at index ${cardIndex}`);
+					console.log(
+						`[Testing] Removing duplicate card ${index + 1}: "${
+							cardToRemove.title
+						}" (created: ${
+							cardToRemove.created || 'no timestamp'
+						}) at index ${cardIndex}`
+					);
 					state.storyCards.splice(cardIndex, 1);
 				} else {
-					console.log(`[Testing] WARNING: Could not find card "${cardToRemove.title}" in storyCards array`);
+					console.log(
+						`[Testing] WARNING: Could not find card "${cardToRemove.title}" in storyCards array`
+					);
 				}
 			});
-			
-			console.log(`[Testing] Removed ${cardsToRemove.length} duplicate settings cards`);
+
+			console.log(
+				`[Testing] Removed ${cardsToRemove.length} duplicate settings cards`
+			);
 		} else {
 			console.log('[Testing] No duplicate settings cards found');
 		}
@@ -385,7 +403,7 @@ function Testing(inHook, inText, inStop) {
 		// Verify the card was successfully created and is accessible
 		console.log('[Testing] Verifying settings card creation...');
 		const verifyCard = getSettingsCard();
-		
+
 		if (verifyCard) {
 			console.log('[Testing] Settings card verification successful');
 			console.log('[Testing] Updating settings card...');
@@ -396,11 +414,16 @@ function Testing(inHook, inText, inStop) {
 				pinCardToTop(verifyCard);
 			}
 		} else {
-			console.log('[Testing] ERROR: Settings card verification failed - card not found after creation');
+			console.log(
+				'[Testing] ERROR: Settings card verification failed - card not found after creation'
+			);
 			console.log(
 				'[Testing] Current storyCards:',
 				state.storyCards
-					? state.storyCards.map((c) => ({ title: c.title, type: c.type }))
+					? state.storyCards.map((c) => ({
+							title: c.title,
+							type: c.type
+					  }))
 					: 'none'
 			);
 		}
@@ -426,9 +449,13 @@ function Testing(inHook, inText, inStop) {
 
 		console.log(`[Testing] Found ${settingsCards.length} settings cards:`);
 		settingsCards.forEach((card, index) => {
-			console.log(`[Testing]   Card ${index + 1}: "${card.title}" (created: ${card.created || 'no timestamp'})`);
+			console.log(
+				`[Testing]   Card ${index + 1}: "${card.title}" (created: ${
+					card.created || 'no timestamp'
+				})`
+			);
 		});
-		
+
 		return settingsCards;
 	}
 
