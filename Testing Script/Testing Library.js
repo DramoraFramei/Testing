@@ -58,8 +58,12 @@
 // The functions to initialize and run the Testing script library
 function Testing(inHook, inText, inStop) {
 	'use strict';
-	
-	console.log(`[Testing] Function called with hook: ${inHook}, text length: ${(inText || '').length}, stop: ${inStop}`);
+
+	console.log(
+		`[Testing] Function called with hook: ${inHook}, text length: ${
+			(inText || '').length
+		}, stop: ${inStop}`
+	);
 
 	// Safety check for AI Dungeon environment
 	if (typeof state === 'undefined') {
@@ -106,8 +110,13 @@ function Testing(inHook, inText, inStop) {
 	const HOOK = inHook;
 	const TEXT = (typeof inText === 'string' && inText) || '\n';
 	const STOP = inStop === true;
-	
-	console.log(`[Testing] Hook: ${HOOK}, Text: "${TEXT.substring(0, 50)}...", Stop: ${STOP}`);
+
+	console.log(
+		`[Testing] Hook: ${HOOK}, Text: "${TEXT.substring(
+			0,
+			50
+		)}...", Stop: ${STOP}`
+	);
 
 	// Initialize the Testing script state
 	console.log('[Testing] Initializing Testing script state...');
@@ -134,7 +143,9 @@ function Testing(inHook, inText, inStop) {
 				console.log('[Testing] Calling processOutput...');
 				return processOutput(TEXT);
 			default:
-				console.log(`[Testing] Unknown hook ${HOOK}, calling processDefault...`);
+				console.log(
+					`[Testing] Unknown hook ${HOOK}, calling processDefault...`
+				);
 				return processDefault(TEXT, STOP);
 		}
 	} catch (error) {
@@ -149,7 +160,7 @@ function Testing(inHook, inText, inStop) {
 
 	function getTestingState() {
 		console.log('[Testing] getTestingState() called');
-		
+
 		// Try to get existing state from various locations
 		if (state.Testing) {
 			console.log('[Testing] Found existing state in state.Testing');
@@ -162,11 +173,15 @@ function Testing(inHook, inText, inStop) {
 		console.log('[Testing] Checking for settings card to restore state...');
 		const settingsCard = getSettingsCard();
 		if (settingsCard) {
-			console.log('[Testing] Settings card found, attempting to parse saved state');
+			console.log(
+				'[Testing] Settings card found, attempting to parse saved state'
+			);
 			try {
 				const savedState = JSON.parse(settingsCard.description || '{}');
 				if (validateState(savedState)) {
-					console.log('[Testing] Successfully restored state from settings card');
+					console.log(
+						'[Testing] Successfully restored state from settings card'
+					);
 					return savedState;
 				}
 				console.log('[Testing] Saved state validation failed');
@@ -214,9 +229,14 @@ function Testing(inHook, inText, inStop) {
 	// Hook Processing Functions
 
 	function processInput(text) {
-		console.log(`[Testing] processInput() called with text: "${text.substring(0, 100)}..."`);
+		console.log(
+			`[Testing] processInput() called with text: "${text.substring(
+				0,
+				100
+			)}..."`
+		);
 		console.log(`[Testing] Script enabled: ${TS.config.enabled}`);
-		
+
 		if (!TS.config.enabled) {
 			console.log('[Testing] Script disabled, returning original text');
 			return text;
@@ -225,21 +245,29 @@ function Testing(inHook, inText, inStop) {
 		// Process any commands in input
 		console.log('[Testing] Processing commands in input...');
 		text = processCommands(text);
-		console.log(`[Testing] After command processing: "${text.substring(0, 100)}..."`);
+		console.log(
+			`[Testing] After command processing: "${text.substring(0, 100)}..."`
+		);
 
 		console.log('[Testing] processInput() completed');
 		return text;
 	}
 
 	function processContext(text, stop) {
-		console.log(`[Testing] processContext() called with text length: ${text.length}, stop: ${stop}`);
+		console.log(
+			`[Testing] processContext() called with text length: ${text.length}, stop: ${stop}`
+		);
 		console.log(`[Testing] Script enabled: ${TS.config.enabled}`);
-		
+
 		if (!TS.config.enabled) {
-			console.log('[Testing] Script disabled, checking for settings card...');
+			console.log(
+				'[Testing] Script disabled, checking for settings card...'
+			);
 			// Even if disabled, try to create settings card once
 			if (!getSettingsCard()) {
-				console.log('[Testing] No settings card found, creating one...');
+				console.log(
+					'[Testing] No settings card found, creating one...'
+				);
 				createSettingsCard();
 			} else {
 				console.log('[Testing] Settings card already exists');
@@ -265,9 +293,11 @@ function Testing(inHook, inText, inStop) {
 	}
 
 	function processOutput(text) {
-		console.log(`[Testing] processOutput() called with text length: ${text.length}`);
+		console.log(
+			`[Testing] processOutput() called with text length: ${text.length}`
+		);
 		console.log(`[Testing] Script enabled: ${TS.config.enabled}`);
-		
+
 		if (!TS.config.enabled) {
 			console.log('[Testing] Script disabled, returning original text');
 			return text;
@@ -276,7 +306,10 @@ function Testing(inHook, inText, inStop) {
 		// Extract information from markers
 		console.log('[Testing] Extracting marked text...');
 		const extractedInfo = extractMarkedText(text);
-		console.log(`[Testing] Found ${extractedInfo.length} marked text items:`, extractedInfo);
+		console.log(
+			`[Testing] Found ${extractedInfo.length} marked text items:`,
+			extractedInfo
+		);
 
 		if (extractedInfo.length > 0) {
 			// Process extracted information
@@ -309,87 +342,120 @@ function Testing(inHook, inText, inStop) {
 	function ensureSettingsCard() {
 		console.log('[Testing] ensureSettingsCard() called');
 		let settingsCard = getSettingsCard();
-		console.log('[Testing] getSettingsCard() result:', settingsCard ? 'found' : 'not found');
+		console.log(
+			'[Testing] getSettingsCard() result:',
+			settingsCard ? 'found' : 'not found'
+		);
 
 		if (!settingsCard) {
 			console.log('[Testing] No settings card found, creating one...');
 			settingsCard = createSettingsCard();
+
+			// Verify the card was actually created and added
+			console.log(
+				'[Testing] After creation, settingsCard exists:',
+				!!settingsCard
+			);
+			console.log(
+				'[Testing] After creation, storyCards length:',
+				state.storyCards ? state.storyCards.length : 0
+			);
+
+			// Double-check by searching again
+			const verifyCard = getSettingsCard();
+			console.log(
+				'[Testing] Verification search result:',
+				verifyCard ? 'found' : 'not found'
+			);
+
+			if (!verifyCard) {
+				console.log(
+					'[Testing] WARNING: Settings card creation failed or card not findable'
+				);
+				console.log(
+					'[Testing] Current storyCards:',
+					state.storyCards
+						? state.storyCards.map((c) => c.title)
+						: 'none'
+				);
+			}
 		}
 
-		console.log('[Testing] Updating settings card...');
-		updateSettingsCard(settingsCard);
+		if (settingsCard) {
+			console.log('[Testing] Updating settings card...');
+			updateSettingsCard(settingsCard);
 
-		if (TS.config.pinSettingsCard) {
-			console.log('[Testing] Pinning settings card to top...');
-			pinCardToTop(settingsCard);
+			if (TS.config.pinSettingsCard) {
+				console.log('[Testing] Pinning settings card to top...');
+				pinCardToTop(settingsCard);
+			}
+		} else {
+			console.log(
+				'[Testing] ERROR: No settings card available to update'
+			);
 		}
+
 		console.log('[Testing] ensureSettingsCard() completed');
 	}
 
 	function getSettingsCard() {
 		console.log('[Testing] getSettingsCard() called');
 		console.log('[Testing] state.storyCards exists:', !!state.storyCards);
-		console.log('[Testing] storyCards count:', state.storyCards ? state.storyCards.length : 0);
-		
+		console.log(
+			'[Testing] storyCards count:',
+			state.storyCards ? state.storyCards.length : 0
+		);
+
 		if (state.storyCards && state.storyCards.length > 0) {
-			console.log('[Testing] Current story cards:', state.storyCards.map(card => ({
-				title: card.title,
-				type: card.type,
-				visible: card.visible,
-				isVisible: card.isVisible,
-				keys: card.keys
-			})));
+			console.log(
+				'[Testing] Current story cards:',
+				state.storyCards.map((card) => ({
+					title: card.title,
+					type: card.type,
+					visible: card.visible,
+					isVisible: card.isVisible,
+					keys: card.keys
+				}))
+			);
 		}
-		
+
 		const result = state.storyCards?.find(
 			(card) =>
-				(card.title === 'Testing Script Settings' || card.title === 'Script Settings Story Card') || // Check for both possible titles
-				(card.keys === 'testing,script,settings,config') || // Check for specific keys
-				(card.type === 'settingsCard') || // Check for the new type
-				(card.type === 'text') || // Fallback to text type if needed
-				(card.entry && card.entry.includes('Testing Script Configuration')) || // Check for specific content
-				(card.value && card.value.includes('Testing Script Configuration')) || // Check value as well
-				(card.description && card.description.includes('Testing Script Configuration')) || // Check description as well
-				(card.visible === true || card.isVisible === true) || // Check visibility
-				(card.isVisible === true) || // Check if isVisible
-				(card.enabled === true) || // Check if enabled
-				(card.pinned === true) || // Check if pinned
-				(card.id === 'testing-settings-card') // Check for specific ID
+				card.title === 'Testing Script Settings' ||
+				card.title === 'Script Settings Story Card' ||
+				(card.keys && card.keys.includes('testing')) ||
+				(card.entry &&
+					card.entry.includes('Testing Script Configuration'))
 		);
-		
+
 		console.log('[Testing] Found settings card:', !!result);
 		return result;
 	}
 
 	function createSettingsCard() {
 		console.log('[Testing] createSettingsCard() called');
-		
+
 		// Ensure storyCards array exists
 		if (!state.storyCards) {
-			console.log('[Testing] state.storyCards was null/undefined, creating empty array');
+			console.log(
+				'[Testing] state.storyCards was null/undefined, creating empty array'
+			);
 			state.storyCards = [];
 		}
-		console.log('[Testing] storyCards count before creation:', state.storyCards.length);
+		console.log(
+			'[Testing] storyCards count before creation:',
+			state.storyCards.length
+		);
 
-		// Try creating the card in AI Dungeon's expected format
+		// Create the card using AI Dungeon's standard format
 		const cardEntry = generateSettingsCardEntry();
 		const settingsCard = {
 			title: 'Testing Script Settings',
-			type: 'settingsCard', // Trying 'settingsCard' type
+			type: 'text', // Use standard 'text' type that AI Dungeon recognizes
 			keys: 'testing,script,settings,config',
 			entry: cardEntry,
-			value: cardEntry,
-			description: 'Testing Script Configuration and Settings',
-			visible: true,
-			isVisible: true,
-			enabled: true,
-			pinned: false,
-			id: 'testing-settings-card',
-			// Add timestamp for uniqueness
-			created: new Date().toISOString(),
-			// Try additional properties that might be needed
-			author: 'Testing Script',
-			editable: true
+			description: JSON.stringify(TS),
+			isVisible: true
 		};
 
 		console.log('[Testing] Created settings card object:', {
@@ -397,50 +463,57 @@ function Testing(inHook, inText, inStop) {
 			type: settingsCard.type,
 			keys: settingsCard.keys,
 			entryLength: settingsCard.entry ? settingsCard.entry.length : 0,
-			descriptionLength: settingsCard.description ? settingsCard.description.length : 0
+			descriptionLength: settingsCard.description
+				? settingsCard.description.length
+				: 0,
+			isVisible: settingsCard.isVisible
 		});
+
+		// Ensure the storyCards array exists before pushing
+		if (!Array.isArray(state.storyCards)) {
+			console.log(
+				'[Testing] state.storyCards is not an array, creating new array'
+			);
+			state.storyCards = [];
+		}
 
 		state.storyCards.push(settingsCard);
 		console.log('[Testing] Pushed settings card to storyCards array');
-		console.log('[Testing] storyCards count after creation:', state.storyCards.length);
-		
+		console.log(
+			'[Testing] storyCards count after creation:',
+			state.storyCards.length
+		);
+
 		// Log the final state of all story cards
-		console.log('[Testing] All story cards after creation:', state.storyCards.map(card => ({
-			title: card.title,
-			type: card.type,
-			visible: card.visible,
-			isVisible: card.isVisible,
-			hasEntry: !!card.entry,
-			hasValue: !!card.value,
-			id: card.id
-		})));
+		console.log(
+			'[Testing] All story cards after creation:',
+			state.storyCards.map((card) => ({
+				title: card.title,
+				type: card.type,
+				isVisible: card.isVisible,
+				hasEntry: !!card.entry,
+				hasDescription: !!card.description,
+				keys: card.keys
+			}))
+		);
 
 		logDebug('Created Script Settings Story Card');
 
-		// Try multiple ways to make the card visible to the user
+		// Try to notify the user that the card was created
 		try {
-			// Method 1: Set state.message
 			if (typeof state.message !== 'undefined') {
-				console.log('[Testing] Setting state.message for user feedback');
-				state.message = 'Testing Script initialized! Settings card created. Check your Story Cards.';
+				console.log(
+					'[Testing] Setting state.message for user feedback'
+				);
+				state.message =
+					'Testing Script initialized! Settings card created.';
 			} else {
-				console.log('[Testing] state.message is undefined, cannot set feedback message');
+				console.log(
+					'[Testing] state.message is undefined, cannot set feedback message'
+				);
 			}
-			
-			// Method 2: Try to force refresh by modifying state properties
-			if (typeof state.refresh !== 'undefined') {
-				console.log('[Testing] Attempting to refresh state');
-				state.refresh = true;
-			}
-			
-			// Method 3: Try alternative state.text modification
-			if (typeof state.text !== 'undefined') {
-				console.log('[Testing] Adding notification to state.text');
-				state.text += '\n\n[Testing Script: Settings card created]';
-			}
-			
 		} catch (error) {
-			console.log('[Testing] Error in card visibility methods:', error);
+			console.log('[Testing] Error setting message:', error);
 		}
 
 		console.log('[Testing] createSettingsCard() completed');
@@ -457,8 +530,14 @@ function Testing(inHook, inText, inStop) {
 		console.log('[Testing] Updating card entry and description...');
 		card.entry = generateSettingsCardEntry();
 		card.description = JSON.stringify(TS);
-		console.log('[Testing] Card updated - entry length:', card.entry ? card.entry.length : 0);
-		console.log('[Testing] Card updated - description length:', card.description ? card.description.length : 0);
+		console.log(
+			'[Testing] Card updated - entry length:',
+			card.entry ? card.entry.length : 0
+		);
+		console.log(
+			'[Testing] Card updated - description length:',
+			card.description ? card.description.length : 0
+		);
 	}
 
 	function generateSettingsCardEntry() {
@@ -491,10 +570,12 @@ This card is automatically managed by the Testing script.`;
 
 	function initializeListsFromCharacterSheet() {
 		console.log('[Testing] initializeListsFromCharacterSheet() called');
-		
+
 		// Only initialize once per game session
 		if (TS.initializedFromCharacterSheet) {
-			console.log('[Testing] Already initialized from character sheet, skipping');
+			console.log(
+				'[Testing] Already initialized from character sheet, skipping'
+			);
 			return;
 		}
 
@@ -507,27 +588,39 @@ This card is automatically managed by the Testing script.`;
 			logDebug('Error getting character sheet: ' + error.message);
 			return;
 		}
-		
+
 		if (!characterSheet) {
-			console.log('[Testing] No Character Sheet card found, skipping initialization');
+			console.log(
+				'[Testing] No Character Sheet card found, skipping initialization'
+			);
 			logDebug('No Character Sheet card found, skipping initialization');
 			return;
 		}
-		console.log('[Testing] Found Character Sheet card:', characterSheet.title || 'untitled');
+		console.log(
+			'[Testing] Found Character Sheet card:',
+			characterSheet.title || 'untitled'
+		);
 
-		console.log('[Testing] Extracting subordinates from Character Sheet...');
+		console.log(
+			'[Testing] Extracting subordinates from Character Sheet...'
+		);
 		let subordinates;
 		try {
-			subordinates = extractSubordinatesFromCharacterSheet(characterSheet);
+			subordinates =
+				extractSubordinatesFromCharacterSheet(characterSheet);
 			console.log('[Testing] Extracted subordinates:', subordinates);
 		} catch (error) {
 			console.log('[Testing] Error extracting subordinates:', error);
 			logDebug('Error extracting subordinates: ' + error.message);
 			return;
 		}
-		
+
 		if (subordinates && subordinates.length > 0) {
-			console.log(`[Testing] Found ${subordinates.length} subordinates to initialize: ${subordinates.join(', ')}`);
+			console.log(
+				`[Testing] Found ${
+					subordinates.length
+				} subordinates to initialize: ${subordinates.join(', ')}`
+			);
 			logDebug(
 				`Found ${
 					subordinates.length
@@ -541,9 +634,13 @@ This card is automatically managed by the Testing script.`;
 
 			// Create character profiles for each servant if auto-characters is enabled
 			if (TS.config.autoCharacters) {
-				console.log('[Testing] Auto-characters enabled, creating character cards...');
+				console.log(
+					'[Testing] Auto-characters enabled, creating character cards...'
+				);
 				subordinates.forEach((name) => {
-					console.log(`[Testing] Creating character card for: ${name.trim()}`);
+					console.log(
+						`[Testing] Creating character card for: ${name.trim()}`
+					);
 					createCharacterCard(
 						name.trim(),
 						`Servant of ${getPlayerName(characterSheet)}`
@@ -551,11 +648,15 @@ This card is automatically managed by the Testing script.`;
 					TS.createdCharacters.add(name.trim());
 				});
 			} else {
-				console.log('[Testing] Auto-characters disabled, skipping character card creation');
+				console.log(
+					'[Testing] Auto-characters disabled, skipping character card creation'
+				);
 			}
 
 			TS.initializedFromCharacterSheet = true;
-			console.log('[Testing] Successfully initialized servants from Character Sheet');
+			console.log(
+				'[Testing] Successfully initialized servants from Character Sheet'
+			);
 			logDebug('Successfully initialized servants from Character Sheet');
 		} else {
 			console.log('[Testing] No subordinates found to initialize');
@@ -569,44 +670,72 @@ This card is automatically managed by the Testing script.`;
 			console.log('[Testing] No storyCards array found');
 			return null;
 		}
-		
-		console.log('[Testing] Searching through', state.storyCards.length, 'story cards for Character Sheet');
-		
+
+		console.log(
+			'[Testing] Searching through',
+			state.storyCards.length,
+			'story cards for Character Sheet'
+		);
+
 		// Look for Character Sheet card by different criteria
 		const characterSheet = state.storyCards.find((card) => {
 			// Check if it's explicitly a Character Sheet type
 			if (card.type === 'Character Sheet') {
-				console.log('[Testing] Found card with type "Character Sheet":', card.title);
+				console.log(
+					'[Testing] Found card with type "Character Sheet":',
+					card.title
+				);
 				return true;
 			}
-			
+
 			// Check if the content contains character sheet fields
 			const content = card.value || card.entry || '';
-			if (content.includes('Subordinate(s):') || content.includes('Name:') && content.includes('Gender:')) {
-				console.log('[Testing] Found card with character sheet content:', card.title);
+			if (
+				content.includes('Subordinate(s):') ||
+				(content.includes('Name:') && content.includes('Gender:'))
+			) {
+				console.log(
+					'[Testing] Found card with character sheet content:',
+					card.title
+				);
 				return true;
 			}
-			
+
 			// Check for common character sheet titles
-			if (card.title && (
-				card.title.toLowerCase().includes('character sheet') ||
-				card.title === '`${Your First Name And Last Name}`' ||
-				card.title.includes('Dramora') // Based on the log, the character name is Dramora
-			)) {
-				console.log('[Testing] Found card with character sheet title:', card.title);
+			if (
+				card.title &&
+				(card.title.toLowerCase().includes('character sheet') ||
+					card.title === '`${Your First Name And Last Name}`' ||
+					card.title.includes('Dramora')) // Based on the log, the character name is Dramora
+			) {
+				console.log(
+					'[Testing] Found card with character sheet title:',
+					card.title
+				);
 				return true;
 			}
-			
+
 			return false;
 		});
-		
+
 		if (characterSheet) {
-			console.log('[Testing] Character Sheet card found:', characterSheet.title, 'type:', characterSheet.type);
+			console.log(
+				'[Testing] Character Sheet card found:',
+				characterSheet.title,
+				'type:',
+				characterSheet.type
+			);
 		} else {
 			console.log('[Testing] No Character Sheet card found');
-			console.log('[Testing] Available cards:', state.storyCards.map(card => ({ title: card.title, type: card.type })));
+			console.log(
+				'[Testing] Available cards:',
+				state.storyCards.map((card) => ({
+					title: card.title,
+					type: card.type
+				}))
+			);
 		}
-		
+
 		return characterSheet;
 	}
 
@@ -619,7 +748,9 @@ This card is automatically managed by the Testing script.`;
 		// Look for the Subordinate(s) line
 		const subordinateMatch = text.match(/Subordinate\(s\):\s*([^\n\r]+)/i);
 		if (!subordinateMatch) {
-			console.log('[Testing] No Subordinate(s): field found in character sheet');
+			console.log(
+				'[Testing] No Subordinate(s): field found in character sheet'
+			);
 			return [];
 		}
 
@@ -632,7 +763,9 @@ This card is automatically managed by the Testing script.`;
 			subordinatesText.includes('(') ||
 			!subordinatesText
 		) {
-			console.log('[Testing] Subordinates text contains placeholders or is empty, skipping');
+			console.log(
+				'[Testing] Subordinates text contains placeholders or is empty, skipping'
+			);
 			return [];
 		}
 
@@ -641,7 +774,7 @@ This card is automatically managed by the Testing script.`;
 			.split(',')
 			.map((name) => name.trim())
 			.filter((name) => name.length > 0);
-		
+
 		console.log('[Testing] Processed subordinates:', subordinates);
 		return subordinates;
 	}
@@ -651,14 +784,16 @@ This card is automatically managed by the Testing script.`;
 		const text = characterSheet.value || characterSheet.entry || '';
 		console.log('[Testing] Character sheet text length:', text.length);
 		console.log('[Testing] Looking for Name field in character sheet...');
-		
+
 		const nameMatch = text.match(/Name:\s*([^\n\r]+)/i);
 		if (nameMatch) {
 			let playerName = nameMatch[1].trim();
 			console.log('[Testing] Found name match:', playerName);
 			// Remove placeholder syntax if present
 			if (playerName.includes('${')) {
-				console.log('[Testing] Name contains placeholder, returning "the Master"');
+				console.log(
+					'[Testing] Name contains placeholder, returning "the Master"'
+				);
 				return 'the Master';
 			}
 			console.log('[Testing] Returning player name:', playerName);
@@ -702,31 +837,37 @@ This card is automatically managed by the Testing script.`;
 
 	function getPlayerNameFromAllCards() {
 		console.log('[Testing] getPlayerNameFromAllCards() called');
-		
+
 		// Look for character sheet without calling getCharacterSheetCard to avoid circular dependency
 		if (!state.storyCards) {
 			console.log('[Testing] No storyCards found');
 			return '${Your ${ First Name } And ${Last Name} is}';
 		}
-		
+
 		// Find character sheet card directly
 		const characterSheet = state.storyCards.find((card) => {
 			const content = card.value || card.entry || '';
-			return card.type === 'Character Sheet' || 
-				   content.includes('Subordinate(s):') || 
-				   (content.includes('Name:') && content.includes('Gender:'));
+			return (
+				card.type === 'Character Sheet' ||
+				content.includes('Subordinate(s):') ||
+				(content.includes('Name:') && content.includes('Gender:'))
+			);
 		});
-		
+
 		if (characterSheet) {
-			console.log('[Testing] Found character sheet for player name extraction');
+			console.log(
+				'[Testing] Found character sheet for player name extraction'
+			);
 			const playerName = getPlayerName(characterSheet);
 			console.log('[Testing] Extracted player name:', playerName);
 			if (!playerName.includes('${') && playerName !== 'the Master') {
 				return playerName;
 			}
 		}
-		
-		console.log('[Testing] Could not find valid player name, returning placeholder');
+
+		console.log(
+			'[Testing] Could not find valid player name, returning placeholder'
+		);
 		return '${Your ${ First Name } And ${Last Name} is}';
 	}
 
@@ -931,7 +1072,10 @@ This card is automatically managed by the Testing script.`;
 	// Text Extraction Functions
 
 	function extractMarkedText(text) {
-		console.log('[Testing] extractMarkedText() called with text length:', text.length);
+		console.log(
+			'[Testing] extractMarkedText() called with text length:',
+			text.length
+		);
 		const markerRegex = /#--\s*(.*?)\s*--#/gs;
 		const extracted = [];
 		let match;
@@ -940,41 +1084,67 @@ This card is automatically managed by the Testing script.`;
 		while ((match = markerRegex.exec(text)) !== null) {
 			matchCount++;
 			const content = match[1].trim();
-			console.log(`[Testing] Found marker ${matchCount}: "${content.substring(0, 50)}..."`);
-			
+			console.log(
+				`[Testing] Found marker ${matchCount}: "${content.substring(
+					0,
+					50
+				)}..."`
+			);
+
 			if (content && !TS.processedMarkers.has(content)) {
-				console.log(`[Testing] Content is new, adding to extracted array`);
+				console.log(
+					`[Testing] Content is new, adding to extracted array`
+				);
 				extracted.push(content);
 				TS.processedMarkers.add(content);
 			} else {
-				console.log(`[Testing] Content is empty or already processed, skipping`);
+				console.log(
+					`[Testing] Content is empty or already processed, skipping`
+				);
 			}
 		}
 
-		console.log(`[Testing] extractMarkedText() found ${matchCount} total markers, ${extracted.length} new ones`);
-		console.log(`[Testing] Processed markers count: ${TS.processedMarkers.size}`);
+		console.log(
+			`[Testing] extractMarkedText() found ${matchCount} total markers, ${extracted.length} new ones`
+		);
+		console.log(
+			`[Testing] Processed markers count: ${TS.processedMarkers.size}`
+		);
 		return extracted;
 	}
 
 	function removeMarkers(text) {
-		console.log('[Testing] removeMarkers() called with text length:', text.length);
+		console.log(
+			'[Testing] removeMarkers() called with text length:',
+			text.length
+		);
 		const result = text.replace(/#--\s*.*?\s*--#/gs, '');
 		console.log('[Testing] removeMarkers() result length:', result.length);
 		return result;
 	}
 
 	function processExtractedInfo(infoArray) {
-		console.log('[Testing] processExtractedInfo() called with', infoArray.length, 'items');
-		
+		console.log(
+			'[Testing] processExtractedInfo() called with',
+			infoArray.length,
+			'items'
+		);
+
 		for (let i = 0; i < infoArray.length; i++) {
 			const info = infoArray[i];
-			console.log(`[Testing] Processing item ${i + 1}/${infoArray.length}: "${info.substring(0, 50)}..."`);
-			
+			console.log(
+				`[Testing] Processing item ${i + 1}/${
+					infoArray.length
+				}: "${info.substring(0, 50)}..."`
+			);
+
 			const category = detectCategory(info);
 			console.log(`[Testing] Detected category: "${category}"`);
-			
+
 			const relevantCard = findOrCreateListCard(category);
-			console.log(`[Testing] Found/created card for category: "${category}"`);
+			console.log(
+				`[Testing] Found/created card for category: "${category}"`
+			);
 
 			console.log(`[Testing] Adding info to card...`);
 			addInfoToCard(relevantCard, info);
@@ -984,17 +1154,21 @@ This card is automatically managed by the Testing script.`;
 				(category.toLowerCase().includes('character') ||
 					category.toLowerCase().includes('servant'))
 			) {
-				console.log(`[Testing] Auto-characters enabled and category contains character/servant, processing character info...`);
+				console.log(
+					`[Testing] Auto-characters enabled and category contains character/servant, processing character info...`
+				);
 				processCharacterInfo(info);
 			} else {
-				console.log(`[Testing] Skipping character processing - autoCharacters: ${TS.config.autoCharacters}, category: "${category}"`);
+				console.log(
+					`[Testing] Skipping character processing - autoCharacters: ${TS.config.autoCharacters}, category: "${category}"`
+				);
 			}
 		}
 
 		if (TS.config.removeDuplicates) {
 			removeDuplicatesFromListCards();
 		}
-		
+
 		console.log('[Testing] processExtractedInfo() completed');
 	}
 
@@ -1265,7 +1439,10 @@ This card is automatically managed by the Testing script.`;
 	// Command Processing
 
 	function processCommands(text) {
-		console.log('[Testing] processCommands() called with text:', text.substring(0, 100) + '...');
+		console.log(
+			'[Testing] processCommands() called with text:',
+			text.substring(0, 100) + '...'
+		);
 		const commandRegex =
 			/\/testing\s+(enable|disable|reset|help|debug|status)/gi;
 		let match;
@@ -1274,7 +1451,9 @@ This card is automatically managed by the Testing script.`;
 		while ((match = commandRegex.exec(text)) !== null) {
 			commandCount++;
 			const command = match[1].toLowerCase();
-			console.log(`[Testing] Found command ${commandCount}: "${command}"`);
+			console.log(
+				`[Testing] Found command ${commandCount}: "${command}"`
+			);
 			executeCommand(command);
 
 			// Remove command from text
@@ -1282,7 +1461,9 @@ This card is automatically managed by the Testing script.`;
 			text = text.replace(match[0], '');
 		}
 
-		console.log(`[Testing] processCommands() processed ${commandCount} commands`);
+		console.log(
+			`[Testing] processCommands() processed ${commandCount} commands`
+		);
 		console.log(`[Testing] Final text length: ${text.length}`);
 		return text;
 	}
@@ -1422,14 +1603,16 @@ This card is automatically managed by the Testing script.`;
 			processedMarkersCount: TS.processedMarkers.size,
 			initializedFromCharacterSheet: TS.initializedFromCharacterSheet
 		});
-		
+
 		state.Testing = TS;
 		console.log('[Testing] Saved TS to state.Testing');
 
 		// Also save to settings card if it exists
 		const settingsCard = getSettingsCard();
 		if (settingsCard) {
-			console.log('[Testing] Updating settings card description with current state');
+			console.log(
+				'[Testing] Updating settings card description with current state'
+			);
 			settingsCard.description = JSON.stringify(TS);
 		} else {
 			console.log('[Testing] No settings card found to update');
@@ -1454,7 +1637,10 @@ This card is automatically managed by the Testing script.`;
 				TS.config.enabled = false;
 			},
 			isEnabled: () => {
-				console.log('[Testing] API isEnabled() called, returning:', TS.config.enabled);
+				console.log(
+					'[Testing] API isEnabled() called, returning:',
+					TS.config.enabled
+				);
 				return TS.config.enabled;
 			},
 
@@ -1464,7 +1650,10 @@ This card is automatically managed by the Testing script.`;
 				return { ...TS.config };
 			},
 			setConfig: (newConfig) => {
-				console.log('[Testing] API setConfig() called with:', newConfig);
+				console.log(
+					'[Testing] API setConfig() called with:',
+					newConfig
+				);
 				TS.config = { ...TS.config, ...newConfig };
 			},
 
@@ -1475,18 +1664,28 @@ This card is automatically managed by the Testing script.`;
 			},
 			getCharacterCards: () => {
 				console.log('[Testing] API getCharacterCards() called');
-				return state.storyCards?.filter(
-					(card) => card.type === TS.config.characterCardType
-				) || [];
+				return (
+					state.storyCards?.filter(
+						(card) => card.type === TS.config.characterCardType
+					) || []
+				);
 			},
 			createListCard: (category) => {
-				console.log('[Testing] API createListCard() called with category:', category);
+				console.log(
+					'[Testing] API createListCard() called with category:',
+					category
+				);
 				return findOrCreateListCard(category);
 			},
 
 			// Information processing
 			addInfo: (category, info) => {
-				console.log('[Testing] API addInfo() called with category:', category, 'info:', info.substring(0, 50) + '...');
+				console.log(
+					'[Testing] API addInfo() called with category:',
+					category,
+					'info:',
+					info.substring(0, 50) + '...'
+				);
 				const card = findOrCreateListCard(category);
 				addInfoToCard(card, info);
 			},
@@ -1505,24 +1704,30 @@ This card is automatically managed by the Testing script.`;
 			debug: (enabled) => {
 				TS.config.debugMode = enabled;
 			}
-		}
+		};
 	}
 	return getAPI();
 }
 
 // Initialize the Testing script
 function init() {
-	console.log('[Testing] init() called - Testing Library initialization starting');
+	console.log(
+		'[Testing] init() called - Testing Library initialization starting'
+	);
 	// This function is called when the library is first loaded
 	// It sets up the basic hooks and default state
 
 	// Validate globalThis.text exists
 	console.log('[Testing] Checking if text variable exists...');
 	if (typeof text === 'undefined') {
-		console.log('[Testing] text is undefined, setting globalThis.text to newline');
+		console.log(
+			'[Testing] text is undefined, setting globalThis.text to newline'
+		);
 		globalThis.text = '\n';
 	} else if (text === null) {
-		console.log('[Testing] text is null, setting globalThis.text to newline');
+		console.log(
+			'[Testing] text is null, setting globalThis.text to newline'
+		);
 		globalThis.text = '\n';
 	} else {
 		console.log('[Testing] text variable exists');
@@ -1534,7 +1739,9 @@ function init() {
 		globalThis.Testing = Testing;
 		console.log('[Testing] Testing function assigned to globalThis');
 	} else {
-		console.log('[Testing] globalThis is undefined, cannot assign Testing function');
+		console.log(
+			'[Testing] globalThis is undefined, cannot assign Testing function'
+		);
 	}
 
 	// Initialize with null hook to perform any setup
