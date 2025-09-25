@@ -341,61 +341,95 @@ function Testing(inHook, inText, inStop) {
 
 	function ensureSettingsCard() {
 		console.log('[Testing] ensureSettingsCard() called');
-		let settingsCard = getSettingsCard();
-		console.log(
-			'[Testing] getSettingsCard() result:',
-			settingsCard ? 'found' : 'not found'
-		);
-
-		if (!settingsCard) {
-			console.log('[Testing] No settings card found, creating one...');
-			settingsCard = createSettingsCard();
-
-			// Verify the card was actually created and added
-			console.log(
-				'[Testing] After creation, settingsCard exists:',
-				!!settingsCard
-			);
-			console.log(
-				'[Testing] After creation, storyCards length:',
-				state.storyCards ? state.storyCards.length : 0
-			);
-
-			// Double-check by searching again
-			const verifyCard = getSettingsCard();
-			console.log(
-				'[Testing] Verification search result:',
-				verifyCard ? 'found' : 'not found'
-			);
-
-			if (!verifyCard) {
-				console.log(
-					'[Testing] WARNING: Settings card creation failed or card not findable'
-				);
-				console.log(
-					'[Testing] Current storyCards:',
-					state.storyCards
-						? state.storyCards.map((c) => c.title)
-						: 'none'
-				);
-			}
+		
+		// Always create a new settings card first
+		console.log('[Testing] Creating new settings card...');
+		const newSettingsCard = createSettingsCard();
+		
+		// Now check for any existing settings cards and remove duplicates
+		console.log('[Testing] Checking for duplicate settings cards...');
+		const allSettingsCards = getAllSettingsCards();
+		
+		if (allSettingsCards.length > 1) {
+			console.log(`[Testing] Found ${allSettingsCards.length} settings cards, removing duplicates...`);
+			
+			// Sort cards by creation timestamp (newest first), fallback to the newest created card
+			allSettingsCards.sort((a, b) => {
+				const timeA = a.created ? new Date(a.created).getTime() : 0;
+				const timeB = b.created ? new Date(b.created).getTime() : 0;
+				return timeB - timeA; // Sort descending (newest first)
+			});
+			
+			// Keep the newest card (first in sorted array) and remove the others
+			const cardToKeep = allSettingsCards[0];
+			const cardsToRemove = allSettingsCards.slice(1);
+			
+			console.log(`[Testing] Keeping newest card: "${cardToKeep.title}" (created: ${cardToKeep.created || 'no timestamp'})`);
+			console.log(`[Testing] Removing ${cardsToRemove.length} older duplicate settings cards`);
+			
+			cardsToRemove.forEach((cardToRemove, index) => {
+				const cardIndex = state.storyCards.indexOf(cardToRemove);
+				if (cardIndex !== -1) {
+					console.log(`[Testing] Removing duplicate card ${index + 1}: "${cardToRemove.title}" (created: ${cardToRemove.created || 'no timestamp'}) at index ${cardIndex}`);
+					state.storyCards.splice(cardIndex, 1);
+				} else {
+					console.log(`[Testing] WARNING: Could not find card "${cardToRemove.title}" in storyCards array`);
+				}
+			});
+			
+			console.log(`[Testing] Removed ${cardsToRemove.length} duplicate settings cards`);
+		} else {
+			console.log('[Testing] No duplicate settings cards found');
 		}
 
-		if (settingsCard) {
+		// Verify the card was successfully created and is accessible
+		console.log('[Testing] Verifying settings card creation...');
+		const verifyCard = getSettingsCard();
+		
+		if (verifyCard) {
+			console.log('[Testing] Settings card verification successful');
 			console.log('[Testing] Updating settings card...');
-			updateSettingsCard(settingsCard);
+			updateSettingsCard(verifyCard);
 
 			if (TS.config.pinSettingsCard) {
 				console.log('[Testing] Pinning settings card to top...');
-				pinCardToTop(settingsCard);
+				pinCardToTop(verifyCard);
 			}
 		} else {
+			console.log('[Testing] ERROR: Settings card verification failed - card not found after creation');
 			console.log(
-				'[Testing] ERROR: No settings card available to update'
+				'[Testing] Current storyCards:',
+				state.storyCards
+					? state.storyCards.map((c) => ({ title: c.title, type: c.type }))
+					: 'none'
 			);
 		}
 
 		console.log('[Testing] ensureSettingsCard() completed');
+	}
+
+	function getAllSettingsCards() {
+		console.log('[Testing] getAllSettingsCards() called');
+		if (!state.storyCards) {
+			console.log('[Testing] No storyCards array exists');
+			return [];
+		}
+
+		const settingsCards = state.storyCards.filter(
+			(card) =>
+				card.title === 'Testing Script Settings' ||
+				card.title === 'Script Settings Story Card' ||
+				(card.keys && card.keys.includes('testing')) ||
+				(card.entry &&
+					card.entry.includes('Testing Script Configuration'))
+		);
+
+		console.log(`[Testing] Found ${settingsCards.length} settings cards:`);
+		settingsCards.forEach((card, index) => {
+			console.log(`[Testing]   Card ${index + 1}: "${card.title}" (created: ${card.created || 'no timestamp'})`);
+		});
+		
+		return settingsCards;
 	}
 
 	function getSettingsCard() {
@@ -449,13 +483,15 @@ function Testing(inHook, inText, inStop) {
 
 		// Create the card using AI Dungeon's standard format
 		const cardEntry = generateSettingsCardEntry();
+		const timestamp = new Date().toISOString();
 		const settingsCard = {
 			title: 'Testing Script Settings',
 			type: 'text', // Use standard 'text' type that AI Dungeon recognizes
 			keys: 'testing,script,settings,config',
 			entry: cardEntry,
 			description: JSON.stringify(TS),
-			isVisible: true
+			isVisible: true,
+			created: timestamp // Add timestamp to identify newer cards
 		};
 
 		console.log('[Testing] Created settings card object:', {
@@ -466,7 +502,8 @@ function Testing(inHook, inText, inStop) {
 			descriptionLength: settingsCard.description
 				? settingsCard.description.length
 				: 0,
-			isVisible: settingsCard.isVisible
+			isVisible: settingsCard.isVisible,
+			created: settingsCard.created
 		});
 
 		// Ensure the storyCards array exists before pushing
